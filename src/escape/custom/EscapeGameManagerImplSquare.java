@@ -8,19 +8,9 @@ public class EscapeGameManagerImplSquare extends EscapeGameManagerImpl {
         setupBoard();
     }
 
-    /**
-     * Make the move in the current game.
-     *
-     * @param from starting location
-     * @param to   ending location
-     * @return true if the move was legal, false otherwise
-     */
     @Override
-    public boolean move(MyCoordinate from, MyCoordinate to) {
-        if(to.equals(from)) {
-            // Moving to the same location
-            return false;
-        }
+    public boolean isValidMoveOnBoard(MyLocation from, MyLocation to) {
         return false;
     }
+
 }

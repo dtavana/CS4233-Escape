@@ -30,11 +30,17 @@ import escape.required.EscapePiece.*;
  */
 public class PieceTypeDescriptor
 {
-	private PieceName pieceName;
-    private MovementPattern movementPattern;
-    private PieceAttribute[] attributes;
+	protected PieceName pieceName;
+    protected MovementPattern movementPattern;
+    protected PieceAttribute[] attributes;
     
     public PieceTypeDescriptor() {}
+
+    public PieceTypeDescriptor(PieceTypeDescriptor descriptor) {
+        this.pieceName = descriptor.getPieceName();
+        this.movementPattern = descriptor.getMovementPattern();
+        this.attributes = descriptor.getAttributes();
+    }
     
     /**
      * @return the pieceName

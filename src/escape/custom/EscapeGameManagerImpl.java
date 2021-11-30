@@ -3,6 +3,8 @@ package escape.custom;
 import escape.EscapeGameManager;
 import escape.exception.EscapeException;
 import escape.required.EscapePiece;
+import escape.required.LocationType;
+import escape.required.Player;
 import escape.required.Rule;
 import escape.util.EscapeGameInitializer;
 import escape.util.LocationInitializer;
@@ -17,6 +19,8 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
     private final HashMap<EscapePiece.PieceName, PieceTypeDescriptor> piecesMap;
     private final HashMap<Rule.RuleID, Integer> ruleMap;
     private final MyBoard board;
+    private Player currentPlayer;
+    private int playerOneScore, playerTwoScore, turnCount;
 
     /**
      * The constructor takes a escape game config
@@ -28,6 +32,10 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
         this.board = new MyBoard(config.getxMax(), config.getyMax());
         this.piecesMap = new HashMap<>();
         this.ruleMap = new HashMap<>();
+        this.currentPlayer = Player.PLAYER1;
+        this.playerOneScore = 0;
+        this.playerTwoScore = 0;
+        this.turnCount = 0;
         for(PieceTypeDescriptor p : config.getPieceTypes())  {
             // Setup pieceName:pieceDescriptor map
             this.piecesMap.put(p.getPieceName(), p);
@@ -52,10 +60,6 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
         System.out.println(board.toString());
     }
 
-    public void performMove(MyLocation from, MyLocation to) {
-
-    }
-
 
     /**
      * Make the move in the current game.
@@ -77,17 +81,39 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
         return valid;
     }
 
-    public abstract boolean isValidMove(MyLocation from, MyLocation to);
+    public boolean isValidMove(MyLocation from, MyLocation to) {
+        if(from.getPiece() == null) {
+            return false;
+        }
+        if(from.getPiece().getPlayer() != currentPlayer) {
+            return false;
+        }
+        if(from.equals(to)) {
+            return false;
+        }
+        return isValidMoveOnBoard(from, to);
+    }
 
-    /**
-     * Make the move in the current game.
-     *
-     * @param from starting location
-     * @param to   ending location
-     * @return true if the move was legal, false otherwise
-     */
-    public abstract boolean move(MyLocation from, MyLocation to);
+    public abstract boolean isValidMoveOnBoard(MyLocation from, MyLocation to);
 
+    public void performMove(MyLocation from, MyLocation to) {
+        if(to.getLocationType() == LocationType.EXIT) {
+            // Remove piece as its moving
+            from.setPiece(null);
+            int pieceValue = to.getPiece().getDescriptor().getAttribute(EscapePiece.PieceAttributeID.VALUE).getValue();
+            if(pieceValue <= 0) {
+                // Default piece value
+                pieceValue = 1;
+            }
+            if(currentPlayer == Player.PLAYER1) {
+                playerOneScore += pieceValue;
+            } else {
+                playerTwoScore += pieceValue;
+            }
+        }
+        turnCount++;
+        currentPlayer = currentPlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1;
+    }
 
     /**
      * Return the piece located at the specified coordinate. If executing
