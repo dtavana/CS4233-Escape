@@ -7,16 +7,20 @@ import java.util.Objects;
 
 public class MyCoordinate implements Coordinate {
 
-    private int x, y;
-    private LocationType locationType;
+    private final int x;
+    private int y;
 
     public MyCoordinate(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public void setLocationType(LocationType locationType) {
-        this.locationType = locationType;
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     @Override
@@ -39,6 +43,6 @@ public class MyCoordinate implements Coordinate {
     @Override
     public String toString()
     {
-        return "MyCoordinate [x=" + x + ", y=" + y + ", locationType=" + locationType + "]";
+        return "MyCoordinate [x=" + x + ", y=" + y + "]";
     }
 }

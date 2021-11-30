@@ -1,21 +1,21 @@
 package escape.custom;
 
 import escape.EscapeGameManager;
-import escape.exception.EscapeException;
-import escape.required.Coordinate;
 import escape.required.EscapePiece;
-import escape.required.LocationType;
+import escape.required.Rule;
 import escape.util.EscapeGameInitializer;
 import escape.util.LocationInitializer;
 import escape.util.PieceTypeDescriptor;
+import escape.util.RuleDescriptor;
 
 import java.util.HashMap;
 
 public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoordinate> {
 
-    private EscapeGameInitializer config;
-    private HashMap<EscapePiece.PieceName, PieceTypeDescriptor> piecesMap;
-    private Board board;
+    private final EscapeGameInitializer config;
+    private final HashMap<EscapePiece.PieceName, PieceTypeDescriptor> piecesMap;
+    private final HashMap<Rule.RuleID, Integer> ruleMap;
+    private final MyBoard board;
 
     /**
      * The constructor takes a escape game config
@@ -24,20 +24,29 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      */
     public EscapeGameManagerImpl(EscapeGameInitializer config) {
         this.config = config;
-        this.board = new Board(config.getxMax(), config.getyMax());
+        this.board = new MyBoard(config.getxMax(), config.getyMax());
         this.piecesMap = new HashMap<>();
+        this.ruleMap = new HashMap<>();
         for(PieceTypeDescriptor p : config.getPieceTypes())  {
             // Setup pieceName:pieceDescriptor map
             this.piecesMap.put(p.getPieceName(), p);
         }
+        for(RuleDescriptor r : config.getRules()) {
+            this.ruleMap.put(r.ruleId, r.ruleValue);
+        }
+
     }
 
     protected void setupBoard() {
         for(LocationInitializer i : this.config.getLocationInitializers()) {
             MyCoordinate c = makeCoordinate(i.x, i.y);
-            c.setLocationType(i.locationType);
-            MyPiece p = new MyPiece(this.piecesMap.get(i.pieceName), i.player);
-            this.board.addPair(c, p);
+            PieceTypeDescriptor pieceTypeDescriptor = this.piecesMap.get(i.pieceName);
+            MyPiece p = null;
+            if(pieceTypeDescriptor != null) {
+                p = new MyPiece(pieceTypeDescriptor, i.player);
+            }
+            MyLocation l = new MyLocation(c, i.locationType, p);
+            this.board.addPair(c, l);
         }
         System.out.println(board.toString());
     }
@@ -65,7 +74,7 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      */
     @Override
     public EscapePiece getPieceAt(MyCoordinate coordinate) {
-        return this.board.get(coordinate);
+        return this.board.getLocation(coordinate).getPiece();
     }
 
     /**
@@ -79,7 +88,6 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      */
     @Override
     public MyCoordinate makeCoordinate(int x, int y) {
-        MyCoordinate c = new MyCoordinate(x, y);
-        return c;
+        return new MyCoordinate(x, y);
     }
 }

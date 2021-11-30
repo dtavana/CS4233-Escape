@@ -23,6 +23,4 @@ public class EscapeGameManagerImplSquare extends EscapeGameManagerImpl {
         }
         return false;
     }
-
-    public boolean move()
 }
