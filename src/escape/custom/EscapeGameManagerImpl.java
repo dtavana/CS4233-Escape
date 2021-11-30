@@ -1,6 +1,7 @@
 package escape.custom;
 
 import escape.EscapeGameManager;
+import escape.exception.EscapeException;
 import escape.required.EscapePiece;
 import escape.required.Rule;
 import escape.util.EscapeGameInitializer;
@@ -51,6 +52,32 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
         System.out.println(board.toString());
     }
 
+    public void performMove(MyLocation from, MyLocation to) {
+
+    }
+
+
+    /**
+     * Make the move in the current game.
+     *
+     * @param from starting coordinate
+     * @param to   ending coordinate
+     * @return true if the move was legal, false otherwise
+     */
+    @Override
+    public boolean move(MyCoordinate from, MyCoordinate to) {
+        MyLocation fromLocation, toLocation;
+        fromLocation = this.board.getLocation(from);
+        toLocation = this.board.getLocation(to);
+        boolean valid = isValidMove(fromLocation, toLocation);
+        if(valid) {
+            // Actually perform the piece move
+            performMove(fromLocation, toLocation);
+        }
+        return valid;
+    }
+
+    public abstract boolean isValidMove(MyLocation from, MyLocation to);
 
     /**
      * Make the move in the current game.
@@ -59,8 +86,7 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      * @param to   ending location
      * @return true if the move was legal, false otherwise
      */
-    @Override
-    public abstract boolean move(MyCoordinate from, MyCoordinate to);
+    public abstract boolean move(MyLocation from, MyLocation to);
 
 
     /**
