@@ -2,7 +2,10 @@ package escape.manager;
 
 import escape.component.MyCoordinate;
 import escape.component.MyLocation;
+import escape.gamedef.EscapePiece;
+import escape.gamedef.LocationType;
 import escape.util.EscapeGameInitializer;
+import escape.util.PieceAttribute;
 
 import java.util.*;
 
@@ -13,24 +16,23 @@ public class EscapeGameManagerImplSquare extends EscapeGameManagerImpl {
     }
 
     @Override
-    public boolean isValidMoveOnBoard(MyLocation from, MyLocation to) {
-        List<MyLocation> path = this.findPath(from, to);
-        if(path != null) {
-            for(MyLocation l : path) {
-                System.out.println(l);
-            }
-        }
-        return path != null;
-    }
-
     public List<MyLocation> findPath(MyLocation from, MyLocation to) {
         Queue<List<MyLocation>> queue = new LinkedList<>();
+        List<MyLocation> exitPath = null;
         queue.add(new ArrayList<>(Collections.singletonList(from)));
         while(!queue.isEmpty()) {
             List<MyLocation> path = queue.remove();
             MyLocation currentLocation = path.get(path.size() - 1);
             if(currentLocation.equals(to)) {
-                return path;
+                if(path.stream().anyMatch(l -> l.getLocationType() == LocationType.EXIT)) {
+                    exitPath = path;
+                } else {
+                    return path;
+                }
+            }
+            PieceAttribute pieceDistance = from.getPiece().getDescriptor().getAttribute(EscapePiece.PieceAttributeID.DISTANCE);
+            if(path.size() >= pieceDistance.getValue()) {
+                continue;
             }
             List<MyLocation> neighbors = this.validNeighbors(currentLocation);
             for(MyLocation l : neighbors) {
@@ -39,7 +41,7 @@ public class EscapeGameManagerImplSquare extends EscapeGameManagerImpl {
                 queue.add(newPath);
             }
         }
-        return null;
+        return exitPath;
     }
 
     @Override
@@ -52,8 +54,7 @@ public class EscapeGameManagerImplSquare extends EscapeGameManagerImpl {
                 }
                 MyCoordinate newCoordinate = new MyCoordinate(source.getCoordinate().getX() + x, source.getCoordinate().getY() + y);
                 MyLocation newLocation = this.board.getLocation(newCoordinate);
-                if(newLocation != null && newLocation.canMoveOver(source.getPiece())) {
-                    //System.out.println("Adding " + newLocation);
+                if(newLocation != null && (newLocation.canMoveOver(source.getPiece()) || newLocation.getLocationType() == LocationType.EXIT)) {
                     neighbors.add(newLocation);
                 }
 

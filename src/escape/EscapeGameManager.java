@@ -1,4 +1,4 @@
-/*******************************************************************************
+package escape; /*******************************************************************************
  * This files was developed for CS4233: Object-Oriented Analysis & Design.
  * The course was taken at Worcester Polytechnic Institute.
  *
@@ -9,7 +9,6 @@
  * 
  * Copyright ©2016-2020 Gary F. Pollice
  *******************************************************************************/
-package escape.manager;
 
 import escape.exception.EscapeException;
 import escape.gamedef.Coordinate;

@@ -13,14 +13,21 @@ Locations:
 	(4, 14) player1 horse
 	(7, 16) player1 bird
 	(5, 13) player1 bird
+	(9, 18) player1 bird
 	(10, 13) player1 snail
 	(10, 14) player1 snail
 	(10, 15) player1 snail
 	(10, 16) player1 snail
 	(10, 17) player1 snail
 	(10, 18) player1 snail
+	(9, 17) player1 snail
 	(9, 13) player1 dog
 	(7, 13) player1 dog
+	(5, 14) player1 dog
+	(4, 13) player1 dog
+	(3, 13) player1 dog
+	(3, 14) player1 dog
+	(4, 15) player1 dog
 
 	(8, 3) player2 frog
 	(8, 7) player2 frog
@@ -44,6 +51,7 @@ Locations:
 	(12, 4) exit
 	(15, 10) exit
 	(3, 10) exit
+	(8, 18) exit
 
 Piece descriptors:
 	frog omni [distance 3]

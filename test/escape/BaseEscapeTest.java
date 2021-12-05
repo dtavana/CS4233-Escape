@@ -3,7 +3,6 @@ package escape;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
 
-import escape.manager.EscapeGameManager;
 import escape.gamedef.Coordinate;
 import escape.gamedef.EscapePiece;
 import escape.gamedef.Player;

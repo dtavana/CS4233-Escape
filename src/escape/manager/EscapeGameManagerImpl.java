@@ -1,5 +1,6 @@
 package escape.manager;
 
+import escape.EscapeGameManager;
 import escape.component.MyBoard;
 import escape.component.MyCoordinate;
 import escape.component.MyLocation;
@@ -65,6 +66,13 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
         //System.out.println(board.toString());
     }
 
+    public void printPath(List<MyLocation> path) {
+        for(MyLocation l : path) {
+            System.out.print(l.getCoordinate() + ", ");
+        }
+        System.out.println();
+    }
+
 
     /**
      * Make the move in the current game.
@@ -88,27 +96,31 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
         MyLocation fromLocation, toLocation;
         fromLocation = this.board.getLocation(from);
         toLocation = this.board.getLocation(to);
-        boolean valid = isValidMove(fromLocation, toLocation);
-        if(valid) {
-            // Actually perform the piece move
-            performMove(fromLocation, toLocation);
-            // Check for draw conditions
-            if(checkDrawConditions()) {
-                System.out.println("Game is over and results in a draw");
-            } else {
-                // Check for win conditions
-                Player newWinner = checkWinConditions();
-                if(newWinner != null) {
-                    this.winner = newWinner;
-                    System.out.println("PLAYER" + (this.winner == Player.PLAYER1 ? "1" : "2") + "wins");
+        if(checkBaseConditions(fromLocation, toLocation)) {
+            List<MyLocation> path = findPath(fromLocation, toLocation);
+            if(path != null) {
+                printPath(path);
+                // Actually perform the piece move
+                performMove(path);
+                // Check for draw conditions
+                if(checkDrawConditions()) {
+                    System.out.println("Game is over and results in a draw");
+                } else {
+                    // Check for win conditions
+                    Player newWinner = checkWinConditions();
+                    if(newWinner != null) {
+                        this.winner = newWinner;
+                        System.out.println("PLAYER" + (this.winner == Player.PLAYER1 ? "1" : "2") + "wins");
+                    }
                 }
+                return true;
             }
-            return true;
+
         }
         return false;
     }
 
-    public boolean isValidMove(MyLocation from, MyLocation to) {
+    public boolean checkBaseConditions(MyLocation from, MyLocation to) {
         if(from.getPiece() == null) {
             System.out.println("From location was not occupied by a piece " + from.getCoordinate());
             return false;
@@ -121,10 +133,11 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
             System.out.println("Moving to same location " + from.getCoordinate() + ":" + to.getCoordinate());
             return false;
         }
-        return isValidMoveOnBoard(from, to);
+        return true;
     }
 
-    public abstract boolean isValidMoveOnBoard(MyLocation from, MyLocation to);
+
+    public abstract List<MyLocation> findPath(MyLocation from, MyLocation to);
     public abstract List<MyLocation> validNeighbors(MyLocation source);
 
     public boolean checkDrawConditions() {
@@ -132,6 +145,7 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
         if(turnLimit != null) {
             if(turnCount >= turnLimit) {
                 if(playerOneScore == playerTwoScore) {
+                    this.isDraw = true;
                     return true;
                 }
             }
@@ -164,7 +178,9 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
         return null;
     }
 
-    public void performMove(MyLocation from, MyLocation to) {
+    public void performMove(List<MyLocation> path) {
+        MyLocation from = path.get(0);
+        MyLocation to = getEndLocationFromPath(path);
         from.setPiece(null);
         if(to.getLocationType() == LocationType.EXIT) {
             int pieceValue = to.getPiece().getDescriptor().getAttribute(EscapePiece.PieceAttributeID.VALUE).getValue();
@@ -180,6 +196,15 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
         }
         turnCount++;
         currentPlayer = currentPlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1;
+    }
+
+    private MyLocation getEndLocationFromPath(List<MyLocation> path) {
+        for(MyLocation l : path) {
+            if(l.getLocationType() == LocationType.EXIT) {
+                return l;
+            }
+        }
+        return path.get(path.size() - 1);
     }
 
     /**

@@ -16,7 +16,6 @@ import java.io.*;
 import javax.xml.bind.*;
 import javax.xml.transform.stream.StreamSource;
 
-import escape.manager.EscapeGameManager;
 import escape.manager.EscapeGameManagerImpl;
 import escape.manager.EscapeGameManagerImplHex;
 import escape.manager.EscapeGameManagerImplSquare;
@@ -26,7 +25,7 @@ import econfig.EscapeConfigurator;
 import escape.util.EscapeGameInitializer;
 
 /**
- * This class builds an instance of an EscapeGameManager from a configuration
+ * This class builds an instance of an escape.EscapeGameManager from a configuration
  * file (.egc). This uses the EscapeConfigurator for XML to turnthe .egc file
  * into a valid XML string that is then unmarshalled into an EscapeGameInitializer
  * file.
@@ -108,7 +107,7 @@ public class EscapeGameBuilder
     
     /**
      * Once the builder is constructed, this method creates the
-     * EscapeGameManager instance. For this example, you would use the
+     * escape.EscapeGameManager instance. For this example, you would use the
      * gameInitializer object to get all of the information you need to create
      * your game.
      * @return the game instance

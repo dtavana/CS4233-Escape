@@ -12,8 +12,8 @@ public class EscapeGameManagerImplHex extends EscapeGameManagerImpl {
     }
 
     @Override
-    public boolean isValidMoveOnBoard(MyLocation from, MyLocation to) {
-        return false;
+    public List<MyLocation> findPath(MyLocation from, MyLocation to) {
+        return null;
     }
 
     @Override
