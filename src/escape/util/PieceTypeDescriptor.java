@@ -13,8 +13,7 @@ package escape.util;
 
 import java.util.*;
 
-import escape.required.EscapePiece;
-import escape.required.EscapePiece.*;
+import escape.gamedef.EscapePiece.*;
 
 /**
  * A JavaBean that represents a complete piece type description. This file
@@ -35,12 +34,6 @@ public class PieceTypeDescriptor
     protected PieceAttribute[] attributes;
     
     public PieceTypeDescriptor() {}
-
-    public PieceTypeDescriptor(PieceTypeDescriptor descriptor) {
-        this.pieceName = descriptor.getPieceName();
-        this.movementPattern = descriptor.getMovementPattern();
-        this.attributes = descriptor.getAttributes();
-    }
     
     /**
      * @return the pieceName

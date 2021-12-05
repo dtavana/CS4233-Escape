@@ -10,7 +10,7 @@
  * Copyright ©2016 Gary F. Pollice
  *******************************************************************************/
 
-package escape.required;
+package escape.gamedef;
 
 /**
  * This interface identifies an object as a Coordinate.

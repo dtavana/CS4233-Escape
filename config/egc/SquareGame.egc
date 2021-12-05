@@ -1,0 +1,57 @@
+Coordinate type: SQUARE
+xMax : 18
+yMax : 24
+
+Locations:
+	(8, 13) player1 frog
+	(8, 15) player1 frog
+	(7, 15) player1 frog
+	(6, 13) player1 frog
+	(6, 17) player1 frog
+	(8, 17) player1 horse
+	(5, 15) player1 horse
+	(4, 14) player1 horse
+	(7, 16) player1 bird
+	(5, 13) player1 bird
+	(10, 13) player1 snail
+	(10, 14) player1 snail
+	(10, 15) player1 snail
+	(10, 16) player1 snail
+	(10, 17) player1 snail
+	(10, 18) player1 snail
+	(9, 13) player1 dog
+	(7, 13) player1 dog
+
+	(8, 3) player2 frog
+	(8, 7) player2 frog
+	(7, 2) player2 frog
+	(7, 4) player2 frog
+	(7, 6) player2 frog
+	(6, 8) player2 horse
+	(5, 5) player2 horse
+	(4, 7) player2 horse
+	(8, 2) player2 bird
+	(8, 5) player2 bird
+	(10, 8) player2 snail
+	(10, 9) player2 snail
+	(10, 10) player2 snail
+	(9, 9) player2 snail
+	(8, 9) player2 snail
+	(7, 9) player2 snail
+	(10, 4) player2 dog
+	(10, 5) player2 dog
+
+	(12, 4) exit
+	(15, 10) exit
+	(3, 10) exit
+
+Piece descriptors:
+	frog omni [distance 3]
+	horse omni [distance 5]
+	bird omni [distance 7]
+	snail omni [distance 1, value 1]
+	dog omni [distance 4, value 2]
+
+Rules:
+  turn_limit 5
+  score 2

@@ -9,17 +9,17 @@
  * 
  * Copyright ©2016-2020 Gary F. Pollice
  *******************************************************************************/
-package escape.required;
+package escape.gamedef;
 
 /**
- * This is an enumeration that is used to identify the player in a game. PLAYER1
- * always moves first.
+ * Every location (e.g., square) on an Escape board has a type. This enumeration
+ * identifies the valid types.
  * 
  * MODIFIABLE: NO
  * MOVEABLE: YES
  * REQUIRED: YES
  */
-public enum Player
+public enum LocationType
 {
-	PLAYER1, PLAYER2;
+	BLOCK, CLEAR, EXIT;
 }

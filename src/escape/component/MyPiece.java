@@ -1,7 +1,7 @@
-package escape.custom;
+package escape.component;
 
-import escape.required.EscapePiece;
-import escape.required.Player;
+import escape.gamedef.EscapePiece;
+import escape.gamedef.Player;
 import escape.util.PieceTypeDescriptor;
 
 public class MyPiece implements EscapePiece {

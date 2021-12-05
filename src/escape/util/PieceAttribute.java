@@ -11,7 +11,7 @@
  *******************************************************************************/
 package escape.util;
 
-import escape.required.EscapePiece.PieceAttributeID;
+import escape.gamedef.EscapePiece.PieceAttributeID;
 
 /**
  * A JavaBean that represents an attribute for piece. This file

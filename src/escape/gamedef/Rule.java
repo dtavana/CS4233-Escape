@@ -6,9 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html Copyright ©2020 Gary F. Pollice
  *******************************************************************************/
 
-package escape.required;
-
-import java.util.Objects;
+package escape.gamedef;
 
 /**
  * Interface for the rule implementations. It also contains a static

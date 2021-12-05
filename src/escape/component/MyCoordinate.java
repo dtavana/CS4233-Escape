@@ -1,7 +1,6 @@
-package escape.custom;
+package escape.component;
 
-import escape.required.Coordinate;
-import escape.required.LocationType;
+import escape.gamedef.Coordinate;
 
 import java.util.Objects;
 

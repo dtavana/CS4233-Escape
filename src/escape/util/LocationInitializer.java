@@ -11,8 +11,9 @@
  *******************************************************************************/
 package escape.util;
 
-import escape.required.*;
-import escape.required.EscapePiece.PieceName;
+import escape.gamedef.LocationType;
+import escape.gamedef.Player;
+import escape.gamedef.EscapePiece.PieceName;
 
 /**
  * A general initializer for a board location. Since this is used

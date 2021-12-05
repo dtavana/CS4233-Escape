@@ -11,7 +11,7 @@
  *******************************************************************************/
 
 package escape.util;
-import escape.required.Rule.RuleID;
+import escape.gamedef.Rule.RuleID;
 
 /**
  * A JavaBean that represents an attribute for rule. This file

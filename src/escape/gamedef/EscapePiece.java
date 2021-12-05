@@ -10,13 +10,15 @@
  * Copyright ©2020 Gary F. Pollice
  *******************************************************************************/
 
-package escape.required;
+package escape.gamedef;
 
 import escape.exception.EscapeException;
 
 /**
- * The interface for a client to use to get messages from the
- * game manager by registering an observer.
+ * Interface for the piece implementations. It also contains static
+ * enumerations for the piece names, movement patterns, and attributes since 
+ * these are properties of pieces. How you implement the actual piece implementations
+ * is up to you and the design decisions you make.
  * 
  * MODIFIABLE: NO
  * MOVEABLE: YES
@@ -25,26 +27,27 @@ import escape.exception.EscapeException;
  * You may extend this interface for your internal use, but this is the public interface
  * that all clients will use.
  */
-public interface GameObserver
+public interface EscapePiece
 {
-    /**
-     * Receive a message from the game
-     * @param message
-     */
-    default void notify(String message)
-    {
-    	throw new EscapeException("Not implemented");
-    }
-    
-    
-    /**
-     * Receive a message with the cause
-     * @param message
-     * @param cause usually the exception that caused the state indicated
-     * 	by the message
-     */
-    default void notify(String message, Throwable cause)
-    {
-    	throw new EscapeException("Not implemented");
-    }
+	public static enum PieceName {BIRD, DOG, FROG, HORSE, SNAIL};
+	
+	public static enum MovementPattern {DIAGONAL, LINEAR, OMNI, ORTHOGONAL, SKEW};
+	
+	public static enum PieceAttributeID {FLY, DISTANCE, JUMP, UNBLOCK, STACK, VALUE};
+	
+	/**
+	 * @return the name
+	 */
+	default PieceName getName()
+	{
+		throw new EscapeException("Not implemented");
+	}
+	
+	/**
+	 * @return the player
+	 */
+	default Player getPlayer()
+	{
+		throw new EscapeException("Not implemented");
+	}
 }

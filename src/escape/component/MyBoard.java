@@ -1,4 +1,4 @@
-package escape.custom;
+package escape.component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,8 +41,30 @@ public class MyBoard {
         this.map.put(c, l);
     }
 
+    private boolean inBounds(MyCoordinate c) {
+        boolean xInBounds = false, yInBounds = false;
+        if(xMax == 0) {
+            xInBounds = true;
+        } else {
+            xInBounds = c.getX() >= 1 && c.getX() <= this.xMax;
+        }
+        if(yMax == 0) {
+            yInBounds = true;
+        } else {
+            yInBounds = c.getY() >= 1 && c.getY() <= this.yMax;
+        }
+        return xInBounds && yInBounds;
+    }
+
     public MyLocation getLocation(MyCoordinate c) {
-        return this.map.get(c);
+        MyLocation existingLocation = this.map.get(c);
+        if(existingLocation != null) {
+            return existingLocation;
+        }
+        if(this.inBounds(c)) {
+            return new MyLocation(c);
+        }
+        return null;
     }
 
     @Override

@@ -9,10 +9,12 @@
  * 
  * Copyright ©2016-2020 Gary F. Pollice
  *******************************************************************************/
-package escape;
+package escape.manager;
 
 import escape.exception.EscapeException;
-import escape.required.*;
+import escape.gamedef.Coordinate;
+import escape.gamedef.EscapePiece;
+import escape.gamedef.GameObserver;
 
 /**
  * This interface describes the behavior of the Escape game manager. Every instance

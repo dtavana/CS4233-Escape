@@ -1,18 +1,21 @@
-package escape.custom;
+package escape.component;
 
-import escape.required.LocationType;
-
-import java.util.Objects;
+import escape.gamedef.LocationType;
 
 public class MyLocation {
     private MyCoordinate coordinate;
     private MyPiece piece;
+    private LocationType locationType = LocationType.CLEAR;
 
-    private LocationType locationType;
+    public MyLocation(MyCoordinate coordinate) {
+        this.coordinate = coordinate;
+    }
 
     public MyLocation(MyCoordinate coordinate, LocationType locationType, MyPiece piece) {
         this.coordinate = coordinate;
-        this.locationType = locationType;
+        if(locationType != null) {
+            this.locationType = locationType;
+        }
         this.piece = piece;
     }
 
@@ -32,6 +35,16 @@ public class MyLocation {
 
     public LocationType getLocationType() {
         return locationType;
+    }
+
+    public boolean canMoveOver(MyPiece sourcePiece) {
+        if(this.locationType != LocationType.CLEAR) {
+            return false;
+        }
+        if(this.piece != null) {
+            return false;
+        }
+        return true;
     }
 
     @Override

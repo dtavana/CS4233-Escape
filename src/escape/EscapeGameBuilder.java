@@ -16,10 +16,11 @@ import java.io.*;
 import javax.xml.bind.*;
 import javax.xml.transform.stream.StreamSource;
 
-import escape.custom.EscapeGameManagerImpl;
-import escape.custom.EscapeGameManagerImplHex;
-import escape.custom.EscapeGameManagerImplSquare;
-import escape.required.Coordinate;
+import escape.manager.EscapeGameManager;
+import escape.manager.EscapeGameManagerImpl;
+import escape.manager.EscapeGameManagerImplHex;
+import escape.manager.EscapeGameManagerImplSquare;
+import escape.gamedef.Coordinate;
 import org.antlr.v4.runtime.CharStreams;
 import econfig.EscapeConfigurator;
 import escape.util.EscapeGameInitializer;
