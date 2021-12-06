@@ -11,9 +11,7 @@ import escape.gamedef.Player;
 import escape.gamedef.Rule;
 import escape.util.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoordinate> {
 
@@ -124,8 +122,39 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
         return true;
     }
 
+    private List<MyLocation> findPath(MyLocation from, MyLocation to) {
+        Queue<List<MyLocation>> queue = new LinkedList<>();
+        List<MyLocation> exitPath = null;
+        queue.add(new ArrayList<>(Collections.singletonList(from)));
+        while(!queue.isEmpty()) {
+            List<MyLocation> path = queue.remove();
+            MyLocation currentLocation = path.get(path.size() - 1);
+            if(currentLocation.equals(to)) {
+                if(to.getLocationType() == LocationType.EXIT) {
+                    return path;
+                } else {
+                    if(path.stream().anyMatch(l -> l.getLocationType() == LocationType.EXIT)) {
+                        exitPath = path;
+                    } else {
+                        return path;
+                    }
+                }
 
-    public abstract List<MyLocation> findPath(MyLocation from, MyLocation to);
+            }
+            int pieceDistance = from.getPiece().getDescriptor().getAttribute(EscapePiece.PieceAttributeID.DISTANCE).getValue();
+            if(path.size() > pieceDistance) {
+                continue;
+            }
+            List<MyLocation> neighbors = this.validNeighbors(currentLocation);
+            for(MyLocation l : neighbors) {
+                List<MyLocation> newPath = new ArrayList<>(path);
+                newPath.add(l);
+                queue.add(newPath);
+            }
+        }
+        return exitPath;
+    }
+
     public abstract List<MyLocation> validNeighbors(MyLocation source);
 
     public boolean checkDrawConditions() {

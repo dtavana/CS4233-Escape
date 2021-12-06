@@ -1,9 +1,11 @@
-package escape;
+package escape.square;
 
 import static escape.gamedef.EscapePiece.PieceName.*;
 import static escape.gamedef.Player.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import java.util.stream.Stream;
+
+import escape.BaseEscapeTest;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.provider.*;
 

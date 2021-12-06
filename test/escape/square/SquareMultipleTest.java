@@ -1,8 +1,11 @@
-package escape;
+package escape.square;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import java.util.stream.Stream;
+
+import escape.BaseEscapeMultipleTest;
+import escape.EscapeGameBuilder;
 import escape.manager.EscapeGameManagerImpl;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.provider.*;

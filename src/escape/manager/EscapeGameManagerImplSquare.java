@@ -16,40 +16,6 @@ public class EscapeGameManagerImplSquare extends EscapeGameManagerImpl {
     }
 
     @Override
-    public List<MyLocation> findPath(MyLocation from, MyLocation to) {
-        Queue<List<MyLocation>> queue = new LinkedList<>();
-        List<MyLocation> exitPath = null;
-        queue.add(new ArrayList<>(Collections.singletonList(from)));
-        while(!queue.isEmpty()) {
-            List<MyLocation> path = queue.remove();
-            MyLocation currentLocation = path.get(path.size() - 1);
-            if(currentLocation.equals(to)) {
-                if(to.getLocationType() == LocationType.EXIT) {
-                    return path;
-                } else {
-                    if(path.stream().anyMatch(l -> l.getLocationType() == LocationType.EXIT)) {
-                        exitPath = path;
-                    } else {
-                        return path;
-                    }
-                }
-
-            }
-            int pieceDistance = from.getPiece().getDescriptor().getAttribute(EscapePiece.PieceAttributeID.DISTANCE).getValue();
-            if(path.size() > pieceDistance) {
-                continue;
-            }
-            List<MyLocation> neighbors = this.validNeighbors(currentLocation);
-            for(MyLocation l : neighbors) {
-                List<MyLocation> newPath = new ArrayList<>(path);
-                newPath.add(l);
-                queue.add(newPath);
-            }
-        }
-        return exitPath;
-    }
-
-    @Override
     public List<MyLocation> validNeighbors(MyLocation source) {
         ArrayList<MyLocation> neighbors = new ArrayList<>();
         for(int x = -1; x <= 1; x++) {

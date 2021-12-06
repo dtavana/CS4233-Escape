@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Base Escape test file. This sets up the tests for all of the other tests.
  */
-abstract class BaseEscapeMultipleTest
+public abstract class BaseEscapeMultipleTest
 {
     protected static EscapeGameManagerImpl manager;
     protected static String configFile;
