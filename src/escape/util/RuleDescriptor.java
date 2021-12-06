@@ -34,24 +34,4 @@ public class RuleDescriptor
 	{
 	    // needed for JAXB unmarshalling
 	}
-	
-	/**
-	 * Description
-	 * @param ruleId
-	 * @param ruleValue
-	 */
-	public RuleDescriptor(RuleID ruleId, int ruleValue)
-	{
-		this.ruleId = ruleId;
-		this.ruleValue = ruleValue;
-	}
-
-	/*
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString()
-	{
-		return "RuleDescriptor [ruleId=" + ruleId + ", ruleValue=" + ruleValue + "]";
-	}
 }

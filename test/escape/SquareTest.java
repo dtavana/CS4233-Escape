@@ -3,9 +3,7 @@ package escape;
 import static escape.gamedef.EscapePiece.PieceName.*;
 import static escape.gamedef.Player.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
-
 import java.util.stream.Stream;
-
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.provider.*;
 
@@ -63,6 +61,7 @@ public class SquareTest extends BaseEscapeTest
                 arguments("Move off board", 10, 15, 12, 19, false),
                 arguments("No piece on source", 1, 1, 1, 2, false),
                 arguments("Dog exceeds distance limit", 7, 13, 11, 14, false),
-                arguments("Move wrong player 1", 10, 10, 11, 10, false));
+                arguments("Move wrong player 1", 10, 10, 11, 10, false),
+                arguments("Move to same location", 10, 14, 10, 14, false));
     }
 }

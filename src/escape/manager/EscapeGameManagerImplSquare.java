@@ -24,14 +24,19 @@ public class EscapeGameManagerImplSquare extends EscapeGameManagerImpl {
             List<MyLocation> path = queue.remove();
             MyLocation currentLocation = path.get(path.size() - 1);
             if(currentLocation.equals(to)) {
-                if(path.stream().anyMatch(l -> l.getLocationType() == LocationType.EXIT)) {
-                    exitPath = path;
-                } else {
+                if(to.getLocationType() == LocationType.EXIT) {
                     return path;
+                } else {
+                    if(path.stream().anyMatch(l -> l.getLocationType() == LocationType.EXIT)) {
+                        exitPath = path;
+                    } else {
+                        return path;
+                    }
                 }
+
             }
-            PieceAttribute pieceDistance = from.getPiece().getDescriptor().getAttribute(EscapePiece.PieceAttributeID.DISTANCE);
-            if(path.size() >= pieceDistance.getValue()) {
+            int pieceDistance = from.getPiece().getDescriptor().getAttribute(EscapePiece.PieceAttributeID.DISTANCE).getValue();
+            if(path.size() > pieceDistance) {
                 continue;
             }
             List<MyLocation> neighbors = this.validNeighbors(currentLocation);
@@ -57,7 +62,6 @@ public class EscapeGameManagerImplSquare extends EscapeGameManagerImpl {
                 if(newLocation != null && (newLocation.canMoveOver(source.getPiece()) || newLocation.getLocationType() == LocationType.EXIT)) {
                     neighbors.add(newLocation);
                 }
-
             }
         }
         return neighbors;

@@ -1,0 +1,55 @@
+X Create an instance of the game with a config file
+X Create an instance of game manager
+
+## Square Board (finite)
+X Test initial pieces placement
+### Single Player 1 Moves
+#### Format
+[x1, y1, x2, y2, expected]: description
+X [8, 15, 8, 14, true]: Frog Left Move
+X [9, 18, 7, 18, true]: Bird forced exit path move
+X [4, 14, 4, 1, false]: Horse no valid moves enclosed
+X [10, 15, 12, 19, false]: Attempt to move piece outside of board bounds
+X [1, 1, 1, 2, false]: Attempt to move from a location with no piece
+X [7, 13, 11, 14, false]: Attempt to move a distance greater than piece limit
+X [10, 10, 11, 10, false]: Attempt to move a piece that is not Player1
+X [10, 14, 10, 14, false]: Attempt to move to same location
+### Multiple Consecutive Moves
+#### Format
+[x1, y1, x2, y2, p1score, p2score, expected]: description
+#### Player 1 wins (Reached Turn Limit)
+X [8, 17, 8, 18, 1, 0, true]: Move Horse to exit
+X [10, 18, 11, 18, 1, 0, false]: Move from location with no piece
+X [8, 5, 5, 7, 1, 0, true]: Move bird
+X [5, 13, 12, 12, 1, 0, true]: Move bird
+X [7, 9, 7, 11, 1, 0, false]: Move snail more than specified distance
+X [7, 9, 7, 10, 1, 0, true]: Move snail
+X [4, 14, 9, 12, 1, 0, true]: Move horse
+X [1, 1, 1, 1, 1, 0, false]: Winner already present
+#### Player 2 wins (Reached Turn Limit)
+X [8, 17, 7, 17, 0, 0, true]: Move Horse
+X [10, 18, 11, 18, 0, 0, false]: Move from location with no piece
+X [8, 5, 12, 4, 0, 1, true]: Move bird
+X [5, 13, 12, 12, 0, 1, true]: Move bird
+X [7, 9, 7, 11, 0, 1, false]: Move snail more than specified distance
+X [7, 9, 7, 10, 0, 1, true]: Move snail
+X [4, 14, 9, 12, 0, 1, true]: Move horse
+X [1, 1, 1, 1, 1, 0, false]: Winner already present
+#### Player 2 wins (Reached Score Limit)
+X [8, 17, 8, 18, 1, 0, true]: Move Horse to exit
+X [10, 18, 11, 18, 1, 0, false]: Move from location with no piece
+X [8, 5, 5, 7, 1, 0, true]: Move bird
+X [5, 13, 12, 12, 1, 0, true]: Move bird
+X [7, 9, 7, 11, 1, 0, false]: Move snail more than specified distance
+X [7, 9, 7, 10, 1, 0, true]: Move snail
+X [4, 14, 9, 12, 1, 0, true]: Move horse
+X [1, 1, 1, 1, 1, 2, false]: Winner already present
+#### Game results in a draw (Reached Turn Limit)
+X [8, 17, 8, 18, 1, 0, true]: Move Horse to exit
+X [10, 18, 11, 18, 1, 0, false]: Move from location with no piece
+X [8, 2, 12, 4, 1, 1, true]: "Move bird to exit
+X [5, 13, 12, 12, 1, 1, true]: Move bird
+X [7, 9, 7, 11, 1, 1, false]: Move snail more than specified distance
+X [7, 9, 7, 10, 1, 1, true]: Move snail
+X [4, 14, 9, 12, 1, 1, true]: Move horse
+[1, 1, 1, 1, 1, 1, false)]: Draw already present
