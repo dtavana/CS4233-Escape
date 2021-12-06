@@ -9,15 +9,28 @@ public class MyCoordinate implements Coordinate {
     private final int x;
     private int y;
 
+    /**
+     * The constructor takes an x and y value
+     * @param x the x value
+     * @param y the y value
+     */
     public MyCoordinate(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * Gets x value
+     * @return the x value
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     * Gets y value
+     * @return the y value
+     */
     public int getY() {
         return y;
     }
@@ -36,9 +49,6 @@ public class MyCoordinate implements Coordinate {
         return x == coordinateObj.x && y == coordinateObj.y;
     }
 
-    /*
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString()
     {

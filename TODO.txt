@@ -1,6 +1,14 @@
 X Create an instance of the game with a config file
 X Create an instance of game manager
 
+## Square Board With Only Two Pieces (finite)
+### Run Out Of Moves
+#### Format
+[x1, y1, x2, y2, expected]: description
+X [1, 1, 1, 3, 1, 0, true]: Move frog to exit
+X [1, 2, 1, 3, 1, 1, true]: Move frog to exit
+X [1, 1, 1, 1, 1, 1, false]: Winner already present
+
 ## Square Board (finite)
 X Test initial pieces placement
 ### Single Player 1 Moves
@@ -34,15 +42,15 @@ X [5, 13, 12, 12, 0, 1, true]: Move bird
 X [7, 9, 7, 11, 0, 1, false]: Move snail more than specified distance
 X [7, 9, 7, 10, 0, 1, true]: Move snail
 X [4, 14, 9, 12, 0, 1, true]: Move horse
-X [1, 1, 1, 1, 1, 0, false]: Winner already present
+X [1, 1, 1, 1, 0, 1, false]: Winner already present
+#### Player 1 wins (Reached Score Limit)
+X [8, 17, 8, 18, 1, 0, true]: Move Horse to exit
+X [10, 4, 12, 5, 1, 0, true]: Move dog
+X [9, 18, 8, 18, 2, 0, true]: Move bird to exit
+X [1, 1, 1, 1, 2, 0, false]: Winner already present
 #### Player 2 wins (Reached Score Limit)
 X [8, 17, 8, 18, 1, 0, true]: Move Horse to exit
-X [10, 18, 11, 18, 1, 0, false]: Move from location with no piece
-X [8, 5, 5, 7, 1, 0, true]: Move bird
-X [5, 13, 12, 12, 1, 0, true]: Move bird
-X [7, 9, 7, 11, 1, 0, false]: Move snail more than specified distance
-X [7, 9, 7, 10, 1, 0, true]: Move snail
-X [4, 14, 9, 12, 1, 0, true]: Move horse
+X [10, 4, 12, 4, 1, 2, true]: Move dog to exit
 X [1, 1, 1, 1, 1, 2, false]: Winner already present
 #### Game results in a draw (Reached Turn Limit)
 X [8, 17, 8, 18, 1, 0, true]: Move Horse to exit
@@ -52,4 +60,52 @@ X [5, 13, 12, 12, 1, 1, true]: Move bird
 X [7, 9, 7, 11, 1, 1, false]: Move snail more than specified distance
 X [7, 9, 7, 10, 1, 1, true]: Move snail
 X [4, 14, 9, 12, 1, 1, true]: Move horse
-[1, 1, 1, 1, 1, 1, false)]: Draw already present
+X [1, 1, 1, 1, 1, 1, false)]: Draw already present
+
+## Hex Board (Infinite)
+X Test initial pieces placement
+### Single Player 1 Moves
+#### Format
+[x1, y1, x2, y2, expected]: description
+X [0, 1, -1, 2, true]: Frog up left move
+X [0, -1, 2, -2, true]: Frog forced exit path move
+X [0, -5, 1, 2, false]: No piece on source
+X [-2, -2, 11, 14, false]: Dog exceeds distance limit
+X [4, -6, 11, 10, false]: Move wrong player 1
+X [0, -4, 0, -4, false]: Move to same location
+### Multiple Consecutive Moves
+#### Format
+[x1, y1, x2, y2, p1score, p2score, expected]: description
+#### Player 1 wins (Reached Turn Limit)
+X [0, -1, 2, -2, 1, 0, true]: Move Frog to exit
+X [10, 18, 11, 18, 1, 0, false: Move from location with no piece
+X [4, -6, 11, -6, 1, 0, true]: Move bird
+X [0, -4, -1, -4, 1, 0, true]: Move bird
+X [4, 3, 4, 6, 1, 0, false: Move snail more than specified distance
+X [4, 3, 4, 4, 1, 0, true]: Move snail
+X [2, -3, 2, -2, 1, 0, true]: Move horse
+X [1, 1, 1, 1, 1, 0, false]: Winner already present
+#### Player 2 wins (Reached Turn Limit)
+X [1, -1, 2, -2, 0, 0, true]: Move Frog
+X [10, 18, 11, 18, 0, 0, false: Move from location with no piece
+X [4, -6, 3, -7, 0, 1, true]: Move bird to exit
+X [0, -4, -1, -4, 0, 1, true]: Move bird
+X [4, 3, 4, 4, 0, 1, true]: Move snail
+X [2, -3, 2, -2, 0, 1, true]: Move horse
+X [1, 1, 1, 1, 0, 1, false]: Winner already present
+#### Player 1 wins (Reached Score Limit)
+X [-2, -2, -3, 0, 2, 0, true]: Move dog to exit
+X [1, 1, 1, 1, 2, 0, false]: Winner already present
+#### Player 2 wins (Reached Score Limit)
+X [1, -1, 2, -2, 0, 0, true]: Move Frog
+X [4, -6, 3, -7, 0, 1, true]: Move bird to exit
+X [0, -4, -1, -4, 0, 1, true]: Move bird
+X [3, -1, 1, -2, 0, 2, true]: Move frog to exit
+X [1, 1, 1, 1, 1, 2, false]: Winner already present
+#### Game results in a draw (Reached Turn Limit)
+X [0, -1, 1, -2, 1, 0, true]: Move frog to exit
+X [4, -6, 3, -7, 1, 1, true]: Move bird to exit
+X [0, 1, -1, 2, 1, 1, true]: Frog up left move
+X [4, 3, 4, 4, 1, 1, true]: Move snail
+X [1, -1, 2, -2, 1, 1, true]: Move Frog
+X [1, 1, 1, 1, 1, 1, false)]: Draw already present

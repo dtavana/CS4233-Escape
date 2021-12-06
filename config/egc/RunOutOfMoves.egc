@@ -1,0 +1,17 @@
+Coordinate type: SQUARE
+xMax : 5
+yMax : 5
+
+Locations:
+	(1, 1) player1 frog
+
+	(1, 2) player2 frog
+
+	(1, 3) exit
+
+Piece descriptors:
+	frog omni [distance 3]
+
+Rules:
+  turn_limit 5
+  score 2

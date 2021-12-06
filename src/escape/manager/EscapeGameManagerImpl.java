@@ -48,6 +48,9 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
 
     }
 
+    /**
+     * Set up the board and other implementation specific attributes
+     */
     protected void setupBoard() {
         for(LocationInitializer i : this.config.getLocationInitializers()) {
             MyCoordinate c = makeCoordinate(i.x, i.y);
@@ -80,6 +83,7 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
             System.out.println("Game is over and PLAYER" + (this.winner == Player.PLAYER1 ? "1" : "2") + " has won");
             return false;
         }
+
         MyLocation fromLocation, toLocation;
         fromLocation = this.board.getLocation(from);
         toLocation = this.board.getLocation(to);
@@ -106,6 +110,116 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
         return false;
     }
 
+    /**
+     * Return the piece located at the specified coordinate. If executing
+     * this method in the game instance causes an exception, then this method
+     * returns null and sets the status message appropriately. The status message
+     * is not used in the initial release(s) of the game.
+     *
+     * @param coordinate the location to probe
+     * @return the piece at the specified location or null if there is none
+     */
+    @Override
+    public EscapePiece getPieceAt(MyCoordinate coordinate) {
+        return this.board.getLocation(coordinate).getPiece();
+    }
+
+    /**
+     * Returns a coordinate of the appropriate type. If the coordinate cannot be
+     * created, then null is returned and the status message is set appropriately
+     * if the observer is used.
+     *
+     * @param x the x component
+     * @param y the y component
+     * @return the coordinate or null if the coordinate cannot be implemented
+     */
+    @Override
+    public MyCoordinate makeCoordinate(int x, int y) {
+        return new MyCoordinate(x, y);
+    }
+
+    /**
+     * Actually update the board and point scores for players once a move has been verified
+     *
+     * @param path path that the move took
+     */
+    public void performMove(List<MyLocation> path) {
+        MyLocation from = path.get(0);
+        MyLocation to = getEndLocationFromPath(path);
+        MyPiece piece = from.getPiece();
+        from.setPiece(null);
+        if(to.getLocationType() == LocationType.EXIT) {
+            PieceAttribute pieceValueAttribute = piece.getDescriptor().getAttribute(EscapePiece.PieceAttributeID.VALUE);
+            int pieceValue;
+            if(pieceValueAttribute == null) {
+                // Default piece value
+                pieceValue = 1;
+            } else {
+                pieceValue = pieceValueAttribute.getValue();
+            }
+            if(currentPlayer == Player.PLAYER1) {
+                playerOneScore += pieceValue;
+            } else {
+                playerTwoScore += pieceValue;
+            }
+        } else {
+            to.setPiece(piece);
+        }
+        turnCount++;
+        currentPlayer = currentPlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1;
+    }
+
+    /**
+     * Get the ending location from the path
+     * which could be the final element in the list
+     * or the first EXIT location found in the path
+     *
+     * @param path path that the move took
+     * @return the ending location for the path
+     */
+    private MyLocation getEndLocationFromPath(List<MyLocation> path) {
+        for(MyLocation l : path) {
+            if(l.getLocationType() == LocationType.EXIT) {
+                return l;
+            }
+        }
+        return path.get(path.size() - 1);
+    }
+
+    /**
+     * Get Player 1s current score
+     *
+     * @return current player one score
+     */
+    public int getPlayerOneScore() {
+        return playerOneScore;
+    }
+
+    /**
+     * Get Player 2s current score
+     *
+     * @return current player two score
+     */
+    public int getPlayerTwoScore() {
+        return playerTwoScore;
+    }
+
+    /**
+     * Check if the next player has available pieces to move
+     *
+     * @return true if they do, false otherwise
+     */
+    public boolean checkAvailablePieces() {
+        return this.board.hasAvailablePieces(this.currentPlayer);
+    }
+
+    /**
+     * Check the base move conditions for a proposed move
+     *
+     * @param from the source location
+     * @param to the destination location
+     * @return true if valid, false otherwise
+     */
     public boolean checkBaseConditions(MyLocation from, MyLocation to) {
         if(from.getPiece() == null) {
             System.out.println("From location was not occupied by a piece " + from.getCoordinate());
@@ -122,6 +236,71 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
         return true;
     }
 
+    /**
+     * Check if specific draw conditions are present
+     *
+     * @return true if drawn, false otherwise
+     */
+    public boolean checkDrawConditions() {
+        Integer turnLimit = this.ruleMap.get(Rule.RuleID.TURN_LIMIT);
+        if(turnLimit != null) {
+            if(turnCount >= turnLimit) {
+                if(playerOneScore == playerTwoScore) {
+                    this.isDraw = true;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if a specific player has one the game
+     *
+     * @return the player that has won or null if no player has won
+     */
+    public Player checkWinConditions() {
+        // Check turn limit
+        Integer turnLimit = this.ruleMap.get(Rule.RuleID.TURN_LIMIT);
+        if(turnLimit != null) {
+            if(turnCount >= turnLimit) {
+                if(playerOneScore > playerTwoScore) {
+                    return Player.PLAYER1;
+                } else if(playerTwoScore > playerOneScore) {
+                    return Player.PLAYER2;
+                }
+            }
+        }
+        Integer scoreLimit = this.ruleMap.get(Rule.RuleID.SCORE);
+        if(scoreLimit != null) {
+            if(playerOneScore >= scoreLimit) {
+                return Player.PLAYER1;
+            }
+            else if(playerTwoScore >= scoreLimit) {
+                return Player.PLAYER2;
+            }
+        }
+        if(!checkAvailablePieces()) {
+            return this.currentPlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1;
+        }
+        return null;
+    }
+
+    /**
+     * Generate a list of valid neighbors from a location based on board type
+     *
+     * @param source the source location
+     * @return a list of valid neighbors
+     */
+    public abstract List<MyLocation> validNeighbors(MyLocation source);
+
+    /**
+     * Perform BFS on a graph and return the first found valid path
+     *
+     * @param from source location
+     * @param to destination location
+     * @return path or null if no path exists
+     */
     private List<MyLocation> findPath(MyLocation from, MyLocation to) {
         Queue<List<MyLocation>> queue = new LinkedList<>();
         List<MyLocation> exitPath = null;
@@ -153,115 +332,5 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
             }
         }
         return exitPath;
-    }
-
-    public abstract List<MyLocation> validNeighbors(MyLocation source);
-
-    public boolean checkDrawConditions() {
-        Integer turnLimit = this.ruleMap.get(Rule.RuleID.TURN_LIMIT);
-        if(turnLimit != null) {
-            if(turnCount >= turnLimit) {
-                if(playerOneScore == playerTwoScore) {
-                    this.isDraw = true;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public Player checkWinConditions() {
-        // Check turn limit
-        Integer turnLimit = this.ruleMap.get(Rule.RuleID.TURN_LIMIT);
-        if(turnLimit != null) {
-            if(turnCount >= turnLimit) {
-                if(playerOneScore > playerTwoScore) {
-                    return Player.PLAYER1;
-                } else if(playerTwoScore > playerOneScore) {
-                    return Player.PLAYER2;
-                }
-            }
-        }
-        Integer scoreLimit = this.ruleMap.get(Rule.RuleID.SCORE);
-        if(scoreLimit != null) {
-            if(playerOneScore >= scoreLimit) {
-                return Player.PLAYER1;
-            }
-            else if(playerTwoScore >= scoreLimit) {
-                return Player.PLAYER2;
-            }
-        }
-        return null;
-    }
-
-    public void performMove(List<MyLocation> path) {
-        MyLocation from = path.get(0);
-        MyLocation to = getEndLocationFromPath(path);
-        MyPiece piece = from.getPiece();
-        from.setPiece(null);
-        if(to.getLocationType() == LocationType.EXIT) {
-            PieceAttribute pieceValueAttribute = piece.getDescriptor().getAttribute(EscapePiece.PieceAttributeID.VALUE);
-            int pieceValue;
-            if(pieceValueAttribute == null) {
-                // Default piece value
-                pieceValue = 1;
-            } else {
-                pieceValue = pieceValueAttribute.getValue();
-            }
-            if(currentPlayer == Player.PLAYER1) {
-                playerOneScore += pieceValue;
-            } else {
-                playerTwoScore += pieceValue;
-            }
-        } else {
-            to.setPiece(piece);
-        }
-        turnCount++;
-        currentPlayer = currentPlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1;
-    }
-
-    private MyLocation getEndLocationFromPath(List<MyLocation> path) {
-        for(MyLocation l : path) {
-            if(l.getLocationType() == LocationType.EXIT) {
-                return l;
-            }
-        }
-        return path.get(path.size() - 1);
-    }
-
-    public int getPlayerOneScore() {
-        return playerOneScore;
-    }
-
-    public int getPlayerTwoScore() {
-        return playerTwoScore;
-    }
-
-    /**
-     * Return the piece located at the specified coordinate. If executing
-     * this method in the game instance causes an exception, then this method
-     * returns null and sets the status message appropriately. The status message
-     * is not used in the initial release(s) of the game.
-     *
-     * @param coordinate the location to probe
-     * @return the piece at the specified location or null if there is none
-     */
-    @Override
-    public EscapePiece getPieceAt(MyCoordinate coordinate) {
-        return this.board.getLocation(coordinate).getPiece();
-    }
-
-    /**
-     * Returns a coordinate of the appropriate type. If the coordinate cannot be
-     * created, then null is returned and the status message is set appropriately
-     * if the observer is used.
-     *
-     * @param x the x component
-     * @param y the y component
-     * @return the coordinate or null if the coordinate cannot be implemented
-     */
-    @Override
-    public MyCoordinate makeCoordinate(int x, int y) {
-        return new MyCoordinate(x, y);
     }
 }

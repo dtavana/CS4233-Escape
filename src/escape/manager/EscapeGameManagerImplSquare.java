@@ -2,19 +2,26 @@ package escape.manager;
 
 import escape.component.MyCoordinate;
 import escape.component.MyLocation;
-import escape.gamedef.EscapePiece;
 import escape.gamedef.LocationType;
 import escape.util.EscapeGameInitializer;
-import escape.util.PieceAttribute;
-
 import java.util.*;
 
 public class EscapeGameManagerImplSquare extends EscapeGameManagerImpl {
+    /**
+     * The constructor takes a escape game config
+     * @param config the config
+     */
     public EscapeGameManagerImplSquare(EscapeGameInitializer config) {
         super(config);
         setupBoard();
     }
 
+    /**
+     * Generate a list of valid neighbors from a location based on board type
+     *
+     * @param source the source location
+     * @return a list of valid neighbors
+     */
     @Override
     public List<MyLocation> validNeighbors(MyLocation source) {
         ArrayList<MyLocation> neighbors = new ArrayList<>();
