@@ -1,14 +1,12 @@
 package escape.component;
 
 import escape.gamedef.Player;
-
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class MyBoard {
     private final int xMax;
     private final int yMax;
-    private HashMap<MyCoordinate, MyLocation> map;
+    private final HashMap<MyCoordinate, MyLocation> map;
 
     /**
      * The constructor takes an xMax and yMax
