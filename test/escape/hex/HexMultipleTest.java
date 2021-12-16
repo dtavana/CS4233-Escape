@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 import escape.BaseEscapeMultipleTest;
 import escape.EscapeGameBuilder;
+import escape.component.MyObserver;
 import escape.manager.EscapeGameManagerImpl;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.provider.*;
@@ -21,6 +22,8 @@ public class HexMultipleTest extends BaseEscapeMultipleTest
         currentTests = "Hex Infinite Game Multiple Moves Tests";
         EscapeGameBuilder egb = new EscapeGameBuilder(configFile);
         manager = (EscapeGameManagerImpl) egb.makeGameManager();
+        observer = new MyObserver();
+        manager.addObserver(observer);
         assertNotNull(manager);
     }
 

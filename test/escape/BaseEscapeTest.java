@@ -2,7 +2,9 @@ package escape;
 
 import static org.junit.jupiter.api.Assertions.*;
 import escape.component.MyCoordinate;
+import escape.component.MyObserver;
 import escape.gamedef.EscapePiece;
+import escape.gamedef.GameObserver;
 import escape.gamedef.Player;
 import escape.manager.EscapeGameManagerImpl;
 import org.junit.jupiter.api.*;
@@ -15,6 +17,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 public abstract class BaseEscapeTest
 {
     protected static EscapeGameManagerImpl manager;
+    protected static MyObserver observer;
     protected static String configFile;
     protected static String currentTests;
 
@@ -23,6 +26,8 @@ public abstract class BaseEscapeTest
     {
         EscapeGameBuilder egb = new EscapeGameBuilder(configFile);
         manager = (EscapeGameManagerImpl) egb.makeGameManager();
+        observer = new MyObserver();
+        manager.addObserver(observer);
         assertNotNull(manager);
     }
 

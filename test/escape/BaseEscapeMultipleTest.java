@@ -2,6 +2,8 @@ package escape;
 
 import static org.junit.jupiter.api.Assertions.*;
 import escape.component.MyCoordinate;
+import escape.component.MyObserver;
+import escape.gamedef.GameObserver;
 import escape.manager.EscapeGameManagerImpl;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -12,6 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 public abstract class BaseEscapeMultipleTest
 {
     protected static EscapeGameManagerImpl manager;
+    protected static MyObserver observer;
     protected static String configFile;
     protected static String currentTests;
     protected static String dummyTestName = "Dummy Test";
@@ -22,6 +25,8 @@ public abstract class BaseEscapeMultipleTest
         if(testName.equals(dummyTestName)) {
             EscapeGameBuilder egb = new EscapeGameBuilder(configFile);
             manager = (EscapeGameManagerImpl) egb.makeGameManager();
+            observer = new MyObserver();
+            manager.addObserver(observer);
             assertNotNull(manager);
         } else {
             multipleMoveHelper(x1, y1, x2, y2, player1score, player2score, expected);
@@ -34,6 +39,8 @@ public abstract class BaseEscapeMultipleTest
         if(testName.equals(dummyTestName)) {
             EscapeGameBuilder egb = new EscapeGameBuilder(configFile);
             manager = (EscapeGameManagerImpl) egb.makeGameManager();
+            observer = new MyObserver();
+            manager.addObserver(observer);
             assertNotNull(manager);
         } else {
             multipleMoveHelper(x1, y1, x2, y2, player1score, player2score, expected);
@@ -46,6 +53,8 @@ public abstract class BaseEscapeMultipleTest
         if(testName.equals(dummyTestName)) {
             EscapeGameBuilder egb = new EscapeGameBuilder(configFile);
             manager = (EscapeGameManagerImpl) egb.makeGameManager();
+            observer = new MyObserver();
+            manager.addObserver(observer);
             assertNotNull(manager);
         } else {
             multipleMoveHelper(x1, y1, x2, y2, player1score, player2score, expected);
@@ -58,6 +67,8 @@ public abstract class BaseEscapeMultipleTest
         if(testName.equals(dummyTestName)) {
             EscapeGameBuilder egb = new EscapeGameBuilder(configFile);
             manager = (EscapeGameManagerImpl) egb.makeGameManager();
+            observer = new MyObserver();
+            manager.addObserver(observer);
             assertNotNull(manager);
         } else {
             multipleMoveHelper(x1, y1, x2, y2, player1score, player2score, expected);
@@ -70,6 +81,8 @@ public abstract class BaseEscapeMultipleTest
         if(testName.equals(dummyTestName)) {
             EscapeGameBuilder egb = new EscapeGameBuilder(configFile);
             manager = (EscapeGameManagerImpl) egb.makeGameManager();
+            observer = new MyObserver();
+            manager.addObserver(observer);
             assertNotNull(manager);
         } else {
             multipleMoveHelper(x1, y1, x2, y2, player1score, player2score, expected);

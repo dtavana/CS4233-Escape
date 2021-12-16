@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import escape.BaseEscapeMultipleTest;
 import escape.EscapeGameBuilder;
 import escape.component.MyCoordinate;
+import escape.component.MyObserver;
 import escape.manager.EscapeGameManagerImpl;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,6 +25,8 @@ public class SquareOutOfPiecesMultipleTest
     static void classSetup() throws Exception {
         EscapeGameBuilder egb = new EscapeGameBuilder("config/egc/RunOutOfMoves.egc");
         manager = (EscapeGameManagerImpl) egb.makeGameManager();
+        MyObserver observer = new MyObserver();
+        manager.addObserver(observer);
         assertNotNull(manager);
     }
 

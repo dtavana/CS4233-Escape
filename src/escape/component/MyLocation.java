@@ -1,11 +1,15 @@
 package escape.component;
 
+import escape.gamedef.EscapePiece;
 import escape.gamedef.LocationType;
+import escape.gamedef.Rule;
+
+import java.util.HashMap;
 
 public class MyLocation {
-    private final MyCoordinate coordinate;
-    private MyPiece piece;
-    private LocationType locationType = LocationType.CLEAR;
+    protected final MyCoordinate coordinate;
+    protected MyPiece piece;
+    protected LocationType locationType = LocationType.CLEAR;
 
     /**
      * The constructor takes a coordinate
@@ -65,13 +69,23 @@ public class MyLocation {
      * Check if a piece can move over this location
      *
      * @param sourcePiece the piece
+     * @param ruleMap the rule map of the game
      * @return true if it can, false otherwise
      */
-    public boolean canMoveOver(MyPiece sourcePiece) {
-        if(this.locationType != LocationType.CLEAR) {
+    public boolean canMoveOver(MyPiece sourcePiece, HashMap<Rule.RuleID, Integer> ruleMap) {
+        if(sourcePiece.getDescriptor().getAttribute(EscapePiece.PieceAttributeID.FLY) != null) {
+            return true;
+        }
+        if(sourcePiece.getDescriptor().getAttribute(EscapePiece.PieceAttributeID.UNBLOCK) == null && this.getLocationType() == LocationType.BLOCK) {
+            // Can not move over a block location if do not have unblock
             return false;
         }
-        if(this.piece != null) {
+        if(this.locationType != LocationType.CLEAR) {
+            // Can not move over a non-clear location
+            return false;
+        }
+        if(!ruleMap.containsKey(Rule.RuleID.REMOVE) && this.piece != null) {
+            // Can not move over a location with a piece on it if no remove
             return false;
         }
         return true;

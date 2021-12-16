@@ -1,23 +1,17 @@
 package escape.manager;
 
 import escape.EscapeGameManager;
-import escape.component.MyBoard;
-import escape.component.MyCoordinate;
-import escape.component.MyLocation;
-import escape.component.MyPiece;
-import escape.gamedef.EscapePiece;
-import escape.gamedef.LocationType;
-import escape.gamedef.Player;
-import escape.gamedef.Rule;
+import escape.component.*;
+import escape.gamedef.*;
 import escape.util.*;
-
 import java.util.*;
 
 public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoordinate> {
 
+    protected final EscapeGameObserverManager observerManager;
     private final EscapeGameInitializer config;
     private final HashMap<EscapePiece.PieceName, PieceTypeDescriptor> piecesMap;
-    private final HashMap<Rule.RuleID, Integer> ruleMap;
+    protected final HashMap<Rule.RuleID, Integer> ruleMap;
     protected final MyBoard board;
     private Player currentPlayer, winner;
     private int playerOneScore, playerTwoScore, turnCount;
@@ -29,6 +23,7 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      * @throws Exception on any errors
      */
     public EscapeGameManagerImpl(EscapeGameInitializer config) {
+        this.observerManager = new EscapeGameObserverManager();
         this.config = config;
         this.board = new MyBoard(config.getxMax(), config.getyMax());
         this.piecesMap = new HashMap<>();
@@ -75,12 +70,12 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
     public boolean move(MyCoordinate from, MyCoordinate to) {
         if(isDraw) {
             // Game is over but was a draw
-            System.out.println("Game is over and results in a draw");
+            this.observerManager.notify("Game is over and results in a draw");
             return false;
         }
         else if(this.winner != null) {
             // Game is already over
-            System.out.println("Game is over and PLAYER" + (this.winner == Player.PLAYER1 ? "1" : "2") + " has won");
+            this.observerManager.notify("Game is over and PLAYER" + (this.winner == Player.PLAYER1 ? "1" : "2") + " has won");
             return false;
         }
 
@@ -88,22 +83,25 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
         fromLocation = this.board.getLocation(from);
         toLocation = this.board.getLocation(to);
         if(checkBaseConditions(fromLocation, toLocation)) {
-            List<MyLocation> path = findPath(fromLocation, toLocation);
+            List<MyMove> path = findPath(fromLocation, toLocation);
             if(path != null) {
                 // Actually perform the piece move
                 performMove(path);
                 // Check for draw conditions
                 if(checkDrawConditions()) {
-                    System.out.println("Game is over and results in a draw");
+                    this.observerManager.notify("Game is over and results in a draw");
                 } else {
                     // Check for win conditions
                     Player newWinner = checkWinConditions();
                     if(newWinner != null) {
                         this.winner = newWinner;
-                        System.out.println("PLAYER" + (this.winner == Player.PLAYER1 ? "1" : "2") + " wins");
+                        this.observerManager.notify("PLAYER" + (this.winner == Player.PLAYER1 ? "1" : "2") + " wins");
                     }
                 }
                 return true;
+            } else {
+                this.observerManager.notify("No path could be found");
+                return false;
             }
 
         }
@@ -139,12 +137,35 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
     }
 
     /**
+     * Add an observer to this manager. Whenever the move() method returns
+     * false, the observer will be notified with a message indication the
+     * problem.
+     * @param observer
+     * @return the observer
+     */
+    public GameObserver addObserver(MyObserver observer) {
+        this.observerManager.addObserver(observer);
+        return observer;
+    }
+
+    /**
+     * Remove an observer from this manager. The observer will no longer
+     * receive notifications from this game manager.
+     * @param observer
+     * @return the observer that was removed or null if it had not previously
+     *     been registered
+     */
+    public GameObserver removeObserver(MyObserver observer) {
+        return this.observerManager.removeObserver(observer);
+    }
+
+    /**
      * Actually update the board and point scores for players once a move has been verified
      *
      * @param path path that the move took
      */
-    public void performMove(List<MyLocation> path) {
-        MyLocation from = path.get(0);
+    public void performMove(List<MyMove> path) {
+        MyLocation from = path.get(0).getLocation();
         MyLocation to = getEndLocationFromPath(path);
         MyPiece piece = from.getPiece();
         from.setPiece(null);
@@ -177,13 +198,13 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      * @param path path that the move took
      * @return the ending location for the path
      */
-    private MyLocation getEndLocationFromPath(List<MyLocation> path) {
-        for(MyLocation l : path) {
-            if(l.getLocationType() == LocationType.EXIT) {
-                return l;
+    private MyLocation getEndLocationFromPath(List<MyMove> path) {
+        for(MyMove l : path) {
+            if(l.getLocation().getLocationType() == LocationType.EXIT) {
+                return l.getLocation();
             }
         }
-        return path.get(path.size() - 1);
+        return path.get(path.size() - 1).getLocation();
     }
 
     /**
@@ -222,16 +243,31 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      */
     public boolean checkBaseConditions(MyLocation from, MyLocation to) {
         if(from.getPiece() == null) {
-            System.out.println("From location was not occupied by a piece " + from.getCoordinate());
+            this.observerManager.notify("Attempted to move a piece that does not exist");
             return false;
         }
         if(from.getPiece().getPlayer() != currentPlayer) {
-            System.out.println("From location piece did not match player " + from);
+            this.observerManager.notify("Attempted to move a piece that does not match the current player");
             return false;
         }
         if(from.equals(to)) {
-            System.out.println("Moving to same location " + from.getCoordinate() + ":" + to.getCoordinate());
+            this.observerManager.notify("Attempted to move to the same location");
             return false;
+        }
+        if(to.getLocationType() == LocationType.BLOCK) {
+            this.observerManager.notify("Attempted to move to a BLOCK location");
+            return false;
+        }
+        if(to.getPiece() != null) {
+            if(!ruleMap.containsKey(Rule.RuleID.REMOVE)) {
+                this.observerManager.notify("Attempted to move to a location occupied with a piece");
+                return false;
+            } else {
+                if(to.getPiece().getPlayer() == currentPlayer) {
+                    this.observerManager.notify("Attempted to remove a piece own piece");
+                    return false;
+                }
+            }
         }
         return true;
     }
@@ -289,10 +325,55 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
     /**
      * Generate a list of valid neighbors from a location based on board type
      *
-     * @param source the source location
+     * @param source the source move
+     * @param pattern the movement pattern
      * @return a list of valid neighbors
      */
-    public abstract List<MyLocation> validNeighbors(MyLocation source);
+    public abstract List<MyMove> validNeighbors(MyPiece piece, MyMove source, EscapePiece.MovementPattern pattern);
+
+    /**
+     * Adds a neighbor to the list of neighbors if the new location is valid
+     *
+     * @param sourcePiece the initial source piece
+     * @param source the source location
+     * @param x the x difference
+     * @param y the y difference
+     * @param neighbors the list of neighbors to update
+     * @return a list of valid neighbors
+     */
+    public void addNeighbor(MyPiece sourcePiece, MyMove source, int x, int y, List<MyMove> neighbors) {
+        MyCoordinate newCoordinate = new MyCoordinate(source.getLocation().getCoordinate().getX() + x, source.getLocation().getCoordinate().getY() + y);
+        MyLocation newLocation = this.board.getLocation(newCoordinate);
+        if(newLocation != null) {
+            if(newLocation.canMoveOver(sourcePiece, this.ruleMap)) {
+                neighbors.add(new MyMove(source.getMovementDirection(), newLocation));
+            } else if(newLocation.getLocationType() == LocationType.EXIT) {
+                neighbors.add(new MyMove(source.getMovementDirection(), newLocation));
+            }
+        }
+    }
+
+    /**
+     * Adds a neighbor to the list of neighbors if the new location is valid
+     *
+     * @param source the source location
+     * @param movementDirection the movementDirection to use for new moves
+     * @param x the x difference
+     * @param y the y difference
+     * @param neighbors the list of neighbors to update
+     * @return a list of valid neighbors
+     */
+    public void addNeighbor(MyPiece sourcePiece, MyMove source, MyMove.MovementDirections movementDirection, int x, int y, List<MyMove> neighbors) {
+        MyCoordinate newCoordinate = new MyCoordinate(source.getLocation().getCoordinate().getX() + x, source.getLocation().getCoordinate().getY() + y);
+        MyLocation newLocation = this.board.getLocation(newCoordinate);
+        if(newLocation != null) {
+            if(newLocation.canMoveOver(sourcePiece, this.ruleMap)) {
+                neighbors.add(new MyMove(movementDirection, newLocation));
+            } else if(newLocation.getLocationType() == LocationType.EXIT) {
+                neighbors.add(new MyMove(movementDirection, newLocation));
+            }
+        }
+    }
 
     /**
      * Perform BFS on a graph and return the first found valid path
@@ -301,18 +382,19 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      * @param to destination location
      * @return path or null if no path exists
      */
-    private List<MyLocation> findPath(MyLocation from, MyLocation to) {
-        Queue<List<MyLocation>> queue = new LinkedList<>();
-        List<MyLocation> exitPath = null;
-        queue.add(new ArrayList<>(Collections.singletonList(from)));
+    private List<MyMove> findPath(MyLocation from, MyLocation to) {
+        Queue<List<MyMove>> queue = new LinkedList<>();
+        List<MyMove> exitPath = null;
+        EscapePiece.MovementPattern movementPattern = from.getPiece().getDescriptor().getMovementPattern();
+        queue.add(new ArrayList<>(Collections.singletonList(new MyMove(MyMove.MovementDirections.NOT_SPECIFIED, from))));
         while(!queue.isEmpty()) {
-            List<MyLocation> path = queue.remove();
-            MyLocation currentLocation = path.get(path.size() - 1);
-            if(currentLocation.equals(to)) {
+            List<MyMove> path = queue.remove();
+            MyMove currentMove = path.get(path.size() - 1);
+            if(currentMove.getLocation().equals(to)) {
                 if(to.getLocationType() == LocationType.EXIT) {
                     return path;
                 } else {
-                    if(path.stream().anyMatch(l -> l.getLocationType() == LocationType.EXIT)) {
+                    if(path.stream().anyMatch(l -> l.getLocation().getLocationType() == LocationType.EXIT)) {
                         exitPath = path;
                     } else {
                         return path;
@@ -320,14 +402,19 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
                 }
 
             }
-            int pieceDistance = from.getPiece().getDescriptor().getAttribute(EscapePiece.PieceAttributeID.DISTANCE).getValue();
+            int pieceDistance;
+            if(from.getPiece().getDescriptor().getAttribute(EscapePiece.PieceAttributeID.DISTANCE) != null) {
+                pieceDistance = from.getPiece().getDescriptor().getAttribute(EscapePiece.PieceAttributeID.DISTANCE).getValue();
+            } else {
+                pieceDistance = from.getPiece().getDescriptor().getAttribute(EscapePiece.PieceAttributeID.FLY).getValue();
+            }
             if(path.size() > pieceDistance) {
                 continue;
             }
-            List<MyLocation> neighbors = this.validNeighbors(currentLocation);
-            for(MyLocation l : neighbors) {
-                List<MyLocation> newPath = new ArrayList<>(path);
-                newPath.add(l);
+            List<MyMove> neighbors = this.validNeighbors(from.getPiece(), currentMove, movementPattern);
+            for(MyMove m : neighbors) {
+                List<MyMove> newPath = new ArrayList<>(path);
+                newPath.add(m);
                 queue.add(newPath);
             }
         }
