@@ -91,14 +91,4 @@ public class PieceTypeDescriptor
 				.findFirst();
 		return attr.isPresent() ? attr.get() : null;
 	}
-
-	/*
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString()
-	{
-		return "PieceTypeDescriptor [pieceName=" + pieceName + ", movementPattern="
-		    + movementPattern + ", attributes=" + Arrays.toString(attributes) + "]";
-	}
 }

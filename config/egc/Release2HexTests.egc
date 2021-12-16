@@ -1,0 +1,28 @@
+Coordinate type: HEX
+xMax : 2
+yMax : 12
+
+Locations:
+    (1, 1) player1 bird
+    (2, 4) player1 frog
+    (2, 6) player1 horse
+    (2, 1) player2 dog
+    (1, 2) player2 frog
+
+    (1, 3) exit
+    (1, 6) exit
+    (2, 2) block
+    (3, 2) block
+    (3, 1) block
+
+
+Piece descriptors:
+	frog linear [distance 1, value 3]
+	bird omni [fly 5]
+	dog omni [distance 2, value 2, unblock]
+	horse linear [distance 6]
+
+Rules:
+  turn_limit 3
+  score 2
+  remove

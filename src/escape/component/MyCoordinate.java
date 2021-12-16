@@ -48,10 +48,4 @@ public class MyCoordinate implements Coordinate {
         MyCoordinate coordinateObj = (MyCoordinate) obj;
         return x == coordinateObj.x && y == coordinateObj.y;
     }
-
-    @Override
-    public String toString()
-    {
-        return "MyCoordinate [x=" + x + ", y=" + y + "]";
-    }
 }

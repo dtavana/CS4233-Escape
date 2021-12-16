@@ -36,13 +36,4 @@ public class PieceAttribute {
     public void setId(PieceAttributeID id) { this.id = id; }
     public int getValue() { return value; }
     public void setValue(int intValue) { this.value = intValue; }
-
-	/*
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString()
-	{
-		return "PieceAttribute [id=" + id + ", value=" + value + "]";
-	}
 }

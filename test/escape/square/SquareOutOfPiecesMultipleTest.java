@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import java.util.stream.Stream;
 
-import escape.BaseEscapeMultipleTest;
 import escape.EscapeGameBuilder;
 import escape.component.MyCoordinate;
 import escape.component.MyObserver;

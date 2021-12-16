@@ -91,7 +91,8 @@ X [10, 18, 11, 18, 0, 0, false: Move from location with no piece
 X [4, -6, 3, -7, 0, 1, true]: Move bird to exit
 X [0, -4, -1, -4, 0, 1, true]: Move bird
 X [4, 3, 4, 4, 0, 1, true]: Move snail
-X [2, -3, 2, -2, 0, 1, true]: Move horse
+X [2, -3, 2, -4, 0, 1, true]: Move horse
+X [6, 1, 6, 2, 0, 1, true]: Move dog
 X [1, 1, 1, 1, 0, 1, false]: Winner already present
 #### Player 1 wins (Reached Score Limit)
 X [-2, -2, -3, 0, 2, 0, true]: Move dog to exit
@@ -109,3 +110,11 @@ X [0, 1, -1, 2, 1, 1, true]: Frog up left move
 X [4, 3, 4, 4, 1, 1, true]: Move snail
 X [1, -1, 2, -2, 1, 1, true]: Move Frog
 X [1, 1, 1, 1, 1, 1, false)]: Draw already present
+
+# Release 2 Tests
+## Square Board AND Hex Board
+### Multiple Consecutive Moves
+#### Format
+[x1, y1, x2, y2, p1score, p2score, expected]: description
+X [1, 1, 1, 2, 0, 0, true]: Move bird to frog
+X [2, 1, 2, 2, 0, 0, false]: Move dog to block

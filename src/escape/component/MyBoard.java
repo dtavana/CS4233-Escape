@@ -34,7 +34,7 @@ public class MyBoard {
      * @return true if in bounds, false otherwise
      */
     private boolean inBounds(MyCoordinate c) {
-        boolean xInBounds = false, yInBounds = false;
+        boolean xInBounds, yInBounds;
         if(xMax == 0) {
             xInBounds = true;
         } else {

@@ -50,7 +50,8 @@ public class HexMultipleTest extends BaseEscapeMultipleTest
                 arguments("Move bird to exit", 4, -6, 3, -7, 0, 1, true),
                 arguments("Move bird", 0, -4, -1, -4, 0, 1, true),
                 arguments("Move snail", 4, 3, 4, 4, 0, 1, true),
-                arguments("Move horse", 2, -3, 2, -2, 0, 1, true),
+                arguments("Move horse", 2, -3, 2, -4, 0, 1, true),
+                arguments("Move dog", 6, 1, 6, 2, 0, 1, true),
                 arguments("Winner already present", 1, 1, 1, 1, 0, 1, false));
     }
 

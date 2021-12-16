@@ -143,7 +143,8 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      * @param observer
      * @return the observer
      */
-    public GameObserver addObserver(MyObserver observer) {
+    @Override
+    public GameObserver addObserver(GameObserver observer) {
         this.observerManager.addObserver(observer);
         return observer;
     }
@@ -155,7 +156,8 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      * @return the observer that was removed or null if it had not previously
      *     been registered
      */
-    public GameObserver removeObserver(MyObserver observer) {
+    @Override
+    public GameObserver removeObserver(GameObserver observer) {
         return this.observerManager.removeObserver(observer);
     }
 
@@ -186,7 +188,12 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
         } else {
             to.setPiece(piece);
         }
-        turnCount++;
+        // Update board with new pairs
+        this.board.addPair(from.getCoordinate(), from);
+        this.board.addPair(to.getCoordinate(), to);
+        if(currentPlayer == Player.PLAYER2) {
+            turnCount++;
+        }
         currentPlayer = currentPlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1;
     }
 
@@ -194,14 +201,18 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      * Get the ending location from the path
      * which could be the final element in the list
      * or the first EXIT location found in the path
+     * if the piece is lacking some attributes
      *
      * @param path path that the move took
      * @return the ending location for the path
      */
     private MyLocation getEndLocationFromPath(List<MyMove> path) {
-        for(MyMove l : path) {
-            if(l.getLocation().getLocationType() == LocationType.EXIT) {
-                return l.getLocation();
+        MyPiece sourcePiece = path.get(0).getLocation().getPiece();
+        if(sourcePiece.getDescriptor().getAttribute(EscapePiece.PieceAttributeID.FLY) == null) {
+            for(MyMove l : path) {
+                if(l.getLocation().getLocationType() == LocationType.EXIT) {
+                    return l.getLocation();
+                }
             }
         }
         return path.get(path.size() - 1).getLocation();
@@ -242,6 +253,14 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      * @return true if valid, false otherwise
      */
     public boolean checkBaseConditions(MyLocation from, MyLocation to) {
+        if (from == null) {
+            this.observerManager.notify("Attempted to move from a location that does not exist");
+            return false;
+        }
+        if (to == null) {
+            this.observerManager.notify("Attempted to move to a location that does not exist");
+            return false;
+        }
         if(from.getPiece() == null) {
             this.observerManager.notify("Attempted to move a piece that does not exist");
             return false;
@@ -413,9 +432,11 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
             }
             List<MyMove> neighbors = this.validNeighbors(from.getPiece(), currentMove, movementPattern);
             for(MyMove m : neighbors) {
-                List<MyMove> newPath = new ArrayList<>(path);
-                newPath.add(m);
-                queue.add(newPath);
+                if(!path.contains(m)) {
+                    List<MyMove> newPath = new ArrayList<>(path);
+                    newPath.add(m);
+                    queue.add(newPath);
+                }
             }
         }
         return exitPath;

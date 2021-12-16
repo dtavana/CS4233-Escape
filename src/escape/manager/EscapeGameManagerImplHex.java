@@ -32,30 +32,29 @@ public class EscapeGameManagerImplHex extends EscapeGameManagerImpl {
             switch (source.getMovementDirection()) {
                 case VERTICAL:
                     // UP
-                    this.addNeighbor(sourcePiece, source, 1, 0, neighbors);
+                    this.addNeighbor(sourcePiece, source, 0, 1, neighbors);
                     // DOWN
-                    this.addNeighbor(sourcePiece, source, -1, 0, neighbors);
+                    this.addNeighbor(sourcePiece, source, 0, -1, neighbors);
                     break;
                 case RIGHT_DIAGONAL:
                     // UP RIGHT
-                    this.addNeighbor(sourcePiece, source, 1, 1, neighbors);
+                    this.addNeighbor(sourcePiece, source, 1, 0, neighbors);
                     // DOWN LEFT
-                    this.addNeighbor(sourcePiece, source, -1, -1, neighbors);
+                    this.addNeighbor(sourcePiece, source, -1, 0, neighbors);
                     break;
                 case LEFT_DIAGONAL:
                     // UP LEFT
-                    this.addNeighbor(sourcePiece, source, 1, -1, neighbors);
-                    // DOWN RIGHT
                     this.addNeighbor(sourcePiece, source, -1, 1, neighbors);
+                    // DOWN RIGHT
+                    this.addNeighbor(sourcePiece, source, 1, -1, neighbors);
                     break;
                 case NOT_SPECIFIED:
-                    this.addNeighbor(sourcePiece, source, MyMove.MovementDirections.VERTICAL, 1, 0, neighbors);
-                    this.addNeighbor(sourcePiece, source, MyMove.MovementDirections.VERTICAL,-1, 0, neighbors);
-                    this.addNeighbor(sourcePiece, source, MyMove.MovementDirections.RIGHT_DIAGONAL, 1, 1, neighbors);
-                    this.addNeighbor(sourcePiece, source, MyMove.MovementDirections.RIGHT_DIAGONAL, -1, -1, neighbors);
+                    this.addNeighbor(sourcePiece, source, MyMove.MovementDirections.VERTICAL,  0, 1, neighbors);
+                    this.addNeighbor(sourcePiece, source, MyMove.MovementDirections.VERTICAL, 0, -1, neighbors);
+                    this.addNeighbor(sourcePiece, source, MyMove.MovementDirections.RIGHT_DIAGONAL, 1, 0, neighbors);
+                    this.addNeighbor(sourcePiece, source, MyMove.MovementDirections.RIGHT_DIAGONAL, -1, 0, neighbors);
+                    this.addNeighbor(sourcePiece, source, MyMove.MovementDirections.LEFT_DIAGONAL, -1, 1, neighbors);
                     this.addNeighbor(sourcePiece, source, MyMove.MovementDirections.LEFT_DIAGONAL, 1, -1, neighbors);
-                    this.addNeighbor(sourcePiece, source, MyMove.MovementDirections.LEFT_DIAGONAL,  -1, 1, neighbors);
-
             }
         } else if (pattern == EscapePiece.MovementPattern.OMNI) {
             for(int x = -1; x <= 1; x++) {

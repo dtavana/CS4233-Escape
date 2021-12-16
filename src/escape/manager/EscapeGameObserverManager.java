@@ -5,7 +5,7 @@ import escape.gamedef.GameObserver;
 import java.util.ArrayList;
 
 public class EscapeGameObserverManager {
-    private final ArrayList<MyObserver> observers;
+    private final ArrayList<GameObserver> observers;
 
     public EscapeGameObserverManager() {
         this.observers = new ArrayList<>();
@@ -15,7 +15,7 @@ public class EscapeGameObserverManager {
      * Add an observer to the list of managed observers
      * @param observer the observer to add
      */
-    public void addObserver(MyObserver observer) {
+    public void addObserver(GameObserver observer) {
         this.observers.add(observer);
     }
 
@@ -24,7 +24,7 @@ public class EscapeGameObserverManager {
      * @param observer the observer to rmeove
      * @return the observer that was removed or null if it was not registered
      */
-    public GameObserver removeObserver(MyObserver observer) {
+    public GameObserver removeObserver(GameObserver observer) {
         boolean existed = this.observers.remove(observer);
         if(existed) {
             return observer;

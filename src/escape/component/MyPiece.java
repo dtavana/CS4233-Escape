@@ -35,13 +35,4 @@ public class MyPiece implements EscapePiece {
     public PieceName getName() {
         return this.descriptor.getPieceName();
     }
-
-    /*
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString()
-    {
-        return "MyPiece [descriptor=" + descriptor + ", player=" + player + "]";
-    }
 }

@@ -40,7 +40,12 @@ public class MyMove {
         return this.location;
     }
 
-    public String toString() {
-        return "[MyMove movementDirection=" + movementDirection + ", location=" + location + "]";
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof MyMove)) {
+            return false;
+        }
+        MyMove moveObj = (MyMove) obj;
+        return location.equals(moveObj.getLocation());
     }
 }

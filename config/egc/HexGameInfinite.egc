@@ -43,5 +43,5 @@ Piece descriptors:
 	dog omni [distance 4, value 2]
 
 Rules:
-  turn_limit 5
+  turn_limit 3
   score 2

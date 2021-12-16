@@ -80,6 +80,9 @@ public class MyLocation {
             // Can not move over a block location if do not have unblock
             return false;
         }
+        if(sourcePiece.getDescriptor().getAttribute(EscapePiece.PieceAttributeID.UNBLOCK) != null && this.getLocationType() == LocationType.BLOCK) {
+            return true;
+        }
         if(this.locationType != LocationType.CLEAR) {
             // Can not move over a non-clear location
             return false;
@@ -98,14 +101,5 @@ public class MyLocation {
         }
         MyLocation locationObj = (MyLocation) obj;
         return coordinate.equals(locationObj.getCoordinate());
-    }
-
-    /*
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString()
-    {
-        return "MyLocation [coordinate=" + coordinate + ", piece=" + piece + ", locationType=" + locationType + "]";
     }
 }
