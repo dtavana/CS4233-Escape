@@ -166,7 +166,7 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      *
      * @param path path that the move took
      */
-    public void performMove(List<MyMove> path) {
+    private void performMove(List<MyMove> path) {
         MyLocation from = path.get(0).getLocation();
         MyLocation to = getEndLocationFromPath(path);
         MyPiece piece = from.getPiece();
@@ -241,7 +241,7 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      *
      * @return true if they do, false otherwise
      */
-    public boolean checkAvailablePieces() {
+    private boolean checkAvailablePieces() {
         return this.board.hasAvailablePieces(this.currentPlayer);
     }
 
@@ -252,7 +252,7 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      * @param to the destination location
      * @return true if valid, false otherwise
      */
-    public boolean checkBaseConditions(MyLocation from, MyLocation to) {
+    private boolean checkBaseConditions(MyLocation from, MyLocation to) {
         if (from == null) {
             this.observerManager.notify("Attempted to move from a location that does not exist");
             return false;
@@ -296,7 +296,7 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      *
      * @return true if drawn, false otherwise
      */
-    public boolean checkDrawConditions() {
+    private boolean checkDrawConditions() {
         Integer turnLimit = this.ruleMap.get(Rule.RuleID.TURN_LIMIT);
         if(turnLimit != null) {
             if(turnCount >= turnLimit) {
@@ -314,7 +314,7 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      *
      * @return the player that has won or null if no player has won
      */
-    public Player checkWinConditions() {
+    private Player checkWinConditions() {
         // Check turn limit
         Integer turnLimit = this.ruleMap.get(Rule.RuleID.TURN_LIMIT);
         if(turnLimit != null) {
@@ -348,7 +348,7 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      * @param pattern the movement pattern
      * @return a list of valid neighbors
      */
-    public abstract List<MyMove> validNeighbors(MyPiece piece, MyMove source, EscapePiece.MovementPattern pattern);
+    protected abstract List<MyMove> validNeighbors(MyPiece piece, MyMove source, EscapePiece.MovementPattern pattern);
 
     /**
      * Adds a neighbor to the list of neighbors if the new location is valid
@@ -360,7 +360,7 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      * @param neighbors the list of neighbors to update
      * @return a list of valid neighbors
      */
-    public void addNeighbor(MyPiece sourcePiece, MyMove source, int x, int y, List<MyMove> neighbors) {
+    protected void addNeighbor(MyPiece sourcePiece, MyMove source, int x, int y, List<MyMove> neighbors) {
         MyCoordinate newCoordinate = new MyCoordinate(source.getLocation().getCoordinate().getX() + x, source.getLocation().getCoordinate().getY() + y);
         MyLocation newLocation = this.board.getLocation(newCoordinate);
         if(newLocation != null) {
@@ -382,7 +382,7 @@ public abstract class EscapeGameManagerImpl implements EscapeGameManager<MyCoord
      * @param neighbors the list of neighbors to update
      * @return a list of valid neighbors
      */
-    public void addNeighbor(MyPiece sourcePiece, MyMove source, MyMove.MovementDirections movementDirection, int x, int y, List<MyMove> neighbors) {
+    protected void addNeighbor(MyPiece sourcePiece, MyMove source, MyMove.MovementDirections movementDirection, int x, int y, List<MyMove> neighbors) {
         MyCoordinate newCoordinate = new MyCoordinate(source.getLocation().getCoordinate().getX() + x, source.getLocation().getCoordinate().getY() + y);
         MyLocation newLocation = this.board.getLocation(newCoordinate);
         if(newLocation != null) {
